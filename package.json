@@ -1,13 +1,13 @@
 {
   "name": "electrontodoapp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "ElectronToDoApp - Angular, Electron, To Do, LocalStorage",
   "main": "main.js",
   "dependencies": {
-    "angular": "^1.4.6",
-    "angular-aria": "^1.4.6",
-    "angular-animate": "^1.4.6",
-    "angular-material": "^0.11.1"
+    "angular": "^1.5.5",
+    "angular-animate": "^1.5.5",
+    "angular-aria": "^1.5.5",
+    "angular-material": "^1.0.7"
   },
   "devDependencies": {},
   "scripts": {
@@ -27,7 +27,7 @@
     "Local",
     "storage"
   ],
-  "author": "4gray",
+  "author": "4gray, evedz",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/4gray/electronTodoApp/issues"

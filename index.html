@@ -9,25 +9,22 @@
     <script type="text/javascript" src="node_modules/angular-animate/angular-animate.min.js"></script>
     <script type="text/javascript" src="node_modules/angular-aria/angular-aria.min.js"></script>
     <script type="text/javascript" src="node_modules/angular-material/angular-material.min.js"></script>
-
 </head>
 
 <body layout="column" ng-controller="AppCtrl">
 
 <!-- Toolbar with title -->
 <md-toolbar layout="row">
-    <h1 class="md-toolbar-tools">{{options.name}} - {{options.show}}</h1>
+    <h1 class="md-toolbar-tools">{{meta.name}} - {{meta.show}}</h1>
 </md-toolbar>
 
 <div layout="row" flex>
-
-    <!-- Sidebar with navigation -->
     <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-sm')">
         <md-content>
             <md-list>
-                <md-list-item ng-repeat="navItem in navigationBarItems" ng-click="setContent(navItem.title)">
-                    <md-icon md-font-set="material-icons">{{navItem.icon}}</md-icon>
-                    <p>{{navItem.title}}</p>
+                <md-list-item ng-repeat="category in categoriesList" ng-click="changeTab(category.title)">
+                    <md-icon md-font-set="material-icons">{{category.icon}}</md-icon>
+                    <p>{{category.title}}</p>
                     <md-divider></md-divider>
                 </md-list-item>
             </md-list>
@@ -37,27 +34,57 @@
     <div layout="column" flex id="content">
 
         <md-input-container class="md-block">
-            <label for="input_22">New To Do</label>
-            <input type="text" ng-model="userTypedText.text" class="ng-pristine ng-valid md-input ng-touched" id="input_22" aria-invalid="false" ng-pattern="userTypedText.word" required ng-trim="false"><div class="md-errors-spacer"></div>
+            <label for="input_22">Add a to-do...</label>
+            <input type="text" ng-model="userTypedText" ng-minlength="1" id="input_22" aria-invalid="false">
+            <div class="md-errors-spacer"></div>
         </md-input-container>
 
-        <!-- all tasks -->
-        <!--<md-input-container>-->
-            <!--<input type="text" class="ng-pristine ng-valid md-input ng-touched" id="js-userTypedText" ng-model="userTypedText.text" ng-pattern="userTypedText.word" required ng-trim="false">-->
-        <!--</md-input-container>-->
+        <md-button class="md-button md-raised md-primary" ng-click="addNewTask(userTypedText)">Add</md-button>
 
-        <md-button class="md-button md-raised md-primary" ng-click="addToLocalStorage(userTypedText.text)">add to local storage</md-button>
+        <!-- all -->
+        <div ng-if="meta.show === 'All tasks'"
+             ng-repeat="(index, one) in DB track by $index">
+            <md-card flex-gt-sm="90" flex-gt-md="80"
+                     ng-repeat="object in one track by $index">
+                <md-card-content ng-click="markTaskAsDone()">
+                    <md-checkbox class="eta-task-checkbox" aria-label="{{object.name}}" ng-model="object.done" ng-click="markTaskAsDone(object.id)" data-taskId="{{object.id}}">
+                        <span ng-if="object.done === true" class="eta-task-done">{{object.name}}</span>
+                        <span ng-if="object.done === false">{{object.name}}</span>
+                    </md-checkbox>
+                    <i ng-click="objectDelete(index)" class="material-icons eta-task-delete">&#xE872;</i>
+                </md-card-content>
+            </md-card>
+        </div>
 
-        <md-card flex-gt-sm="90" flex-gt-md="80" ng-repeat="(taskName, object) in locStorTasks | orderBy: 'done'" ng-if="options.show === 'All tasks'">
-            <md-card-content ng-click="objectDone(object.id)">
-                <md-checkbox class="eta-task-checkbox" aria-label="{{ object.name }}" ng-model="object.done" data-taskId="{{object.id}}">
-                    <span ng-if="object.done === true" class="eta-task-done">{{object.name}}</span>
-                    <span ng-if="object.done === false">{{object.name}}</span>
+        <!-- done -->
+        <div ng-if="meta.show === 'Todo'"
+             ng-repeat="(index, one) in DB track by $index">
+            <md-card flex-gt-sm="90" flex-gt-md="80"
+                     ng-repeat="object in one">
+                <md-card-content ng-click="markTaskAsDone()" ng-hide="object.done">
+                    <md-checkbox class="eta-task-checkbox" aria-label="{{object.name}}" ng-model="object.done" ng-click="markTaskAsDone(object.id)" data-taskId="{{object.id}}">
+                        <span ng-if="object.done === true" class="eta-task-done">{{object.name}}</span>
+                        <span ng-if="object.done === false">{{object.name}}</span>
+                    </md-checkbox>
+                    <i ng-click="objectDelete(index)" class="material-icons eta-task-delete">&#xE872;</i>
+                </md-card-content>
+            </md-card>
+        </div>
 
-                </md-checkbox>
-                <i ng-click="objectDelete(object.id)" class="material-icons eta-task-delete">&#xE872;</i>
-            </md-card-content>
-        </md-card>
+        <!-- done -->
+        <div ng-if="meta.show === 'Done'"
+             ng-repeat="(index, one) in DB track by $index">
+            <md-card flex-gt-sm="90" flex-gt-md="80"
+                     ng-repeat="object in one">
+                <md-card-content ng-click="markTaskAsDone()" ng-show="object.done">
+                    <md-checkbox class="eta-task-checkbox" aria-label="{{object.name}}" ng-model="object.done" ng-click="markTaskAsDone(object.id)" data-taskId="{{object.id}}">
+                        <span ng-if="object.done === true" class="eta-task-done">{{object.name}}</span>
+                        <span ng-if="object.done === false">{{object.name}}</span>
+                    </md-checkbox>
+                    <i ng-click="objectDelete(index)" class="material-icons eta-task-delete">&#xE872;</i>
+                </md-card-content>
+            </md-card>
+        </div>
 
     </div>
 </div>
